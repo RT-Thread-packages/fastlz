@@ -1,11 +1,15 @@
 # RT-Thread building script for component
-
+Import('RTT_ROOT')
 from building import *
+Import('rtconfig')
 
 cwd = GetCurrentDir()
-src = Glob('*.c') + Glob('*.cpp')
+src = Glob('fastlz.c')
 CPPPATH = [cwd]
 
-group = DefineGroup('fastlz', src, depend = ['PKG_USING_FASTLZ'], CPPPATH = CPPPATH)
+if GetDepend('FASTLZ_USING_SAMPLE'):
+    src += ['fastlz_sample.c']
+
+group = DefineGroup('fastlz', src, depend = ['FASTLZ_USING_SAMPLE'], CPPPATH = CPPPATH)
 
 Return('group')
