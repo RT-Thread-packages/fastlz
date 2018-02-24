@@ -37,13 +37,15 @@
 
 #include "fastlz.h"
 
-#ifdef FASTLZ_USING_SAMPLE
-
 #define malloc     rt_malloc
 #define free       rt_free
 
 #define BLOCK_HEADER_SIZE              4
+
+/* The output buffer must be at least 5% larger than the input buffer */
 #define COMPRESS_BUFFER_PADDING        400
+
+/* The output buffer can not be smaller than 66 bytes */
 #define COMPRESS_BUFFER_SIZE           4096
 #define DCOMPRESS_BUFFER_SIZE          4096
 
@@ -90,6 +92,11 @@ static int fastlz_compress_file(int fd_in, int fd_out)
 
         /* The destination buffer must be at least size + 400 bytes large because incompressible data may increase in size. */
         cmprs_size = fastlz_compress_level(FASTLZ_COMPRESS_LEVEL, buffer, block_size, (char *) cmprs_buffer);
+        if (cmprs_size < 0)
+        {
+            ret = -1;
+            goto _exit;            
+        }
 
         /* Store compress block size to the block header (4 byte). */
         buffer_hdr[3] = cmprs_size % (1 << 8);
@@ -262,8 +269,6 @@ _exit:
 
 #include <finsh.h>
 
-MSH_CMD_EXPORT_ALIAS(fastlz_test, fastlz_test, fastlz compress and decompress test);
+MSH_CMD_EXPORT(fastlz_test, fastlz compress and decompress test);
 #endif
 #endif
-
-#endif /* FASTLZ_USING_SAMPLE */

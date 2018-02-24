@@ -26,6 +26,11 @@
 
 #if !defined(FASTLZ__COMPRESSOR) && !defined(FASTLZ_DECOMPRESSOR)
 
+#include <rtthread.h>
+
+#define malloc     rt_malloc
+#define free       rt_free
+
 /*
  * Always check for bound when decompressing.
  * Generally it is best to leave it defined.
@@ -170,7 +175,12 @@ static FASTLZ_INLINE int FASTLZ_COMPRESSOR(const void* input, int length, void* 
   const flzuint8* ip_limit = ip + length - 12;
   flzuint8* op = (flzuint8*) output;
 
-  const flzuint8* htab[HASH_SIZE];
+  const flzuint8** htab = (const flzuint8**)malloc(sizeof(flzuint8*) * HASH_SIZE);
+  if (htab == NULL)
+  {
+    return -RT_ENOMEM;
+  }
+  
   const flzuint8** hslot;
   flzuint32 hval;
 
@@ -186,10 +196,14 @@ static FASTLZ_INLINE int FASTLZ_COMPRESSOR(const void* input, int length, void* 
       ip_bound++;
       while(ip <= ip_bound)
         *op++ = *ip++;
+      free(htab);
       return length+1;
     }
     else
+    {
+      free(htab);
       return 0;
+    }
   }
 
   /* initializes hash table */
@@ -414,6 +428,8 @@ static FASTLZ_INLINE int FASTLZ_COMPRESSOR(const void* input, int length, void* 
   *(flzuint8*)output |= (1 << 5);
 #endif
 
+  free(htab);
+  
   return op - (flzuint8*)output;
 }
 
