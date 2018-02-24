@@ -1,4 +1,4 @@
-# QuickLZ
+# FastLZ
 
 ## 1、介绍
 
