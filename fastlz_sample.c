@@ -50,14 +50,14 @@
 #define DCOMPRESS_BUFFER_SIZE          4096
 
 /* compress level: 1 or 2 */
-#define FASTLZ_COMPRESS_LEVEL          FASTLZ_COMPRESSION_LEVEL
+#define FASTLZ_COMPRESS_LEVEL          FASTLZ_SAMPLE_COMPRESSION_LEVEL
 
 static int fastlz_compress_file(int fd_in, int fd_out)
 {
     /* Start to compress file  */
     rt_uint8_t *cmprs_buffer = RT_NULL, *buffer = RT_NULL;
     rt_uint8_t buffer_hdr[BLOCK_HEADER_SIZE] = { 0 };
-    size_t cmprs_size = 0, block_size = 0, totle_cmprs_size = 0;
+    int cmprs_size = 0, block_size = 0, totle_cmprs_size = 0;
     size_t file_size = 0, i = 0;
     int ret = 0;
 
@@ -228,7 +228,7 @@ int fastlz_test(int argc, char ** argv)
 
         if(fastlz_compress_file(fd_in, fd_out) < 0)
         {
-            rt_kprintf("[fastlz] quciklz compress file error!\n");
+            rt_kprintf("[fastlz] fastlz compress file error!\n");
         }
 
     }
@@ -237,7 +237,7 @@ int fastlz_test(int argc, char ** argv)
 
         if(fastlz_decompress_file(fd_in, fd_out) < 0)
         {
-            rt_kprintf("[fastlz] quciklz decompress file error!\n");
+            rt_kprintf("[fastlz] fastlz decompress file error!\n");
         }
     }
     else
