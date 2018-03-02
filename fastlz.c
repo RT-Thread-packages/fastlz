@@ -174,17 +174,17 @@ static FASTLZ_INLINE int FASTLZ_COMPRESSOR(const void* input, int length, void* 
   const flzuint8* ip_bound = ip + length - 2;
   const flzuint8* ip_limit = ip + length - 12;
   flzuint8* op = (flzuint8*) output;
+  
+  const flzuint8** hslot;
+  flzuint32 hval;
+
+  flzuint32 copy;
 
   const flzuint8** htab = (const flzuint8**)malloc(sizeof(flzuint8*) * HASH_SIZE);
   if (htab == NULL)
   {
     return -RT_ENOMEM;
   }
-  
-  const flzuint8** hslot;
-  flzuint32 hval;
-
-  flzuint32 copy;
 
   /* sanity check */
   if(FASTLZ_UNEXPECT_CONDITIONAL(length < 4))
