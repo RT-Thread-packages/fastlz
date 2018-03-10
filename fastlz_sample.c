@@ -42,11 +42,10 @@
 
 #define BLOCK_HEADER_SIZE              4
 
-/* The output buffer can not be smaller than 66 bytes */
 #define COMPRESS_BUFFER_SIZE           4096
 #define DCOMPRESS_BUFFER_SIZE          4096
 
-/* The output buffer must be at least 5% larger than the input buffer */
+/* The output buffer must be at least 5% larger than the input buffer and can not be smaller than 66 bytes */
 #define BUFFER_PADDING                  FASTLZ_BUFFER_PADDING(COMPRESS_BUFFER_SIZE)
 
 /* compress level: 1 or 2 */
