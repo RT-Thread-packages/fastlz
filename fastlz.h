@@ -27,13 +27,16 @@
 #ifndef FASTLZ_H
 #define FASTLZ_H
 
-#define FASTLZ_VERSION 0x000100
+#define FASTLZ_VERSION                 0x000100
 
-#define FASTLZ_VERSION_MAJOR     0
-#define FASTLZ_VERSION_MINOR     0
-#define FASTLZ_VERSION_REVISION  0
+#define FASTLZ_VERSION_MAJOR           0
+#define FASTLZ_VERSION_MINOR           0
+#define FASTLZ_VERSION_REVISION        0
 
-#define FASTLZ_VERSION_STRING "0.1.0"
+#define FASTLZ_VERSION_STRING          "0.1.0"
+
+/* The output buffer must be at least 5% larger than the input buffer */
+#define FASTLZ_BUFFER_PADDING(x)       ((x) * 5 / 100)
 
 #if defined (__cplusplus)
 extern "C" {
