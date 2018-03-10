@@ -35,8 +35,8 @@
 
 #define FASTLZ_VERSION_STRING          "0.1.0"
 
-/* The output buffer must be at least 5% larger than the input buffer */
-#define FASTLZ_BUFFER_PADDING(x)       ((x) * 5 / 100)
+/* The output buffer must be at least 5% larger than the input buffer and can not be smaller than 66 bytes. */
+#define FASTLZ_BUFFER_PADDING(x)       (66 + (x) * 5 / 100)
 
 #if defined (__cplusplus)
 extern "C" {
