@@ -42,12 +42,11 @@
 
 #define BLOCK_HEADER_SIZE              4
 
-/* The output buffer must be at least 5% larger than the input buffer */
-#define COMPRESS_BUFFER_PADDING        400
-
-/* The output buffer can not be smaller than 66 bytes */
 #define COMPRESS_BUFFER_SIZE           4096
 #define DCOMPRESS_BUFFER_SIZE          4096
+
+/* The output buffer must be at least 5% larger than the input buffer and can not be smaller than 66 bytes */
+#define BUFFER_PADDING                  FASTLZ_BUFFER_PADDING(COMPRESS_BUFFER_SIZE)
 
 /* compress level: 1 or 2 */
 #define FASTLZ_COMPRESS_LEVEL          FASTLZ_SAMPLE_COMPRESSION_LEVEL
@@ -64,7 +63,7 @@ static int fastlz_compress_file(int fd_in, int fd_out)
     file_size = lseek(fd_in, 0, SEEK_END);
     lseek(fd_in, 0, SEEK_SET);
 
-    cmprs_buffer = (rt_uint8_t *) malloc(COMPRESS_BUFFER_SIZE + COMPRESS_BUFFER_PADDING);
+    cmprs_buffer = (rt_uint8_t *) malloc(COMPRESS_BUFFER_SIZE + BUFFER_PADDING);
     buffer = (rt_uint8_t *) malloc(COMPRESS_BUFFER_SIZE);
     if (!cmprs_buffer || !buffer)
     {
@@ -86,7 +85,7 @@ static int fastlz_compress_file(int fd_in, int fd_out)
         }
 
         memset(buffer, 0x00, COMPRESS_BUFFER_SIZE);
-        memset(cmprs_buffer, 0x00, COMPRESS_BUFFER_SIZE + COMPRESS_BUFFER_PADDING);
+        memset(cmprs_buffer, 0x00, COMPRESS_BUFFER_SIZE + BUFFER_PADDING);
 
         read(fd_in, buffer, block_size);
 
@@ -149,7 +148,7 @@ static int fastlz_decompress_file(int fd_in, int fd_out)
     }
 
     dcmprs_buffer = (rt_uint8_t *) malloc(DCOMPRESS_BUFFER_SIZE);
-    buffer = (rt_uint8_t *) malloc(DCOMPRESS_BUFFER_SIZE + COMPRESS_BUFFER_PADDING);
+    buffer = (rt_uint8_t *) malloc(DCOMPRESS_BUFFER_SIZE + BUFFER_PADDING);
     if (!dcmprs_buffer || !buffer)
     {
         rt_kprintf("[fastlz] No memory for dcmprs_buffer or buffer!\n");
@@ -164,7 +163,7 @@ static int fastlz_decompress_file(int fd_in, int fd_out)
         read(fd_in, buffer_hdr, BLOCK_HEADER_SIZE);
         block_size = buffer_hdr[0] * (1 << 24) + buffer_hdr[1] * (1 << 16) + buffer_hdr[2] * (1 << 8) + buffer_hdr[3];
 
-        memset(buffer, 0x00, COMPRESS_BUFFER_SIZE + COMPRESS_BUFFER_PADDING);
+        memset(buffer, 0x00, COMPRESS_BUFFER_SIZE + BUFFER_PADDING);
         memset(dcmprs_buffer, 0x00, DCOMPRESS_BUFFER_SIZE);
 
         read(fd_in, buffer, block_size);
