@@ -26,10 +26,13 @@
 
 #if !defined(FASTLZ__COMPRESSOR) && !defined(FASTLZ_DECOMPRESSOR)
 
-#include <rtthread.h>
+#include <rtconfig.h>
+#include <stdio.h>
 
+#ifdef RT_USING_HEAP
 #define malloc     rt_malloc
 #define free       rt_free
+#endif
 
 /*
  * Always check for bound when decompressing.
@@ -183,7 +186,7 @@ static FASTLZ_INLINE int FASTLZ_COMPRESSOR(const void* input, int length, void* 
   const flzuint8** htab = (const flzuint8**)malloc(sizeof(flzuint8*) * HASH_SIZE);
   if (htab == NULL)
   {
-    return -RT_ENOMEM;
+    return -1;
   }
 
   /* sanity check */
