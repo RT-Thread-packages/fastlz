@@ -28,6 +28,7 @@
 
 #include <rtconfig.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #ifdef RT_USING_HEAP
 #define malloc     rt_malloc
