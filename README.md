@@ -1,69 +1,73 @@
 # FastLZ
 
-## 1、介绍
+[中文页](README_ZH.md) | English
 
-FastLZ 是一个快速无损压缩库， 仅包含两个文件， 使用简单， 易于集成。 这个 [FastLZ](https://github.com/RT-Thread-packages/fastlz) 库是 RT-thread 针对官方[FastLZ](http://fastlz.org/download.htm)的C库的移植， 有关 fastlz 的更多信息，请参阅[http://fastlz.org/index.html](http://fastlz.org/index.html) 。
+## 1 Introduction
 
-## 2、获取方式
+FastLZ is a fast and lossless compression library that contains only two files, is simple to use and easy to integrate. This [FastLZ](https://github.com/RT-Thread-packages/fastlz) library is a port of RT-thread to the official [FastLZ](http://fastlz.org/download.htm) C library. For more information about fastlz, please refer to [http://fastlz.org/index.html](http://fastlz.org/index.html).
 
-- 使用 menuconfig
+## 2. How to obtain
+
+- Use menuconfig
 ```
   RT-Thread online packages --->
       miscellaneous packages --->
           [*] Fastlz: A portable real-time compression library
 ```
 
-## 3、示例介绍
+## 3. Example introduction
 
-### 3.1 获取示例
+### 3.1 Get examples
 
-- 配置使能示例选项 `Enable using fastlz sample`;
-- 配置压缩等级选项，配置为level 1（有两种等级 1 or 2，level 1 压缩速度最快， level 2 压缩比大）;
-- 配置包版本选为最新版 `latest_version` .
+- Configure the enable sample option `Enable using fastlz sample`;
+- Configure the compression level option, set to level 1 (there are two levels 1 or 2, level 1 has the fastest compression speed, and level 2 has a large compression ratio);
+- The configuration package version is selected as the latest version `latest_version`.
 
 ![](./doc/image/fastlz.jpg)
 
-### 3.2 运行示例
-该示例为一个简单的文件压缩和解压的例程，需要依赖文件系统，用到的命令有两个` -c`和 `-d`， `-c`命令压缩一个文件到另一个文件，`-d`命令解压一个文件到另一个文件。   
-使用方式：  
-msh cmd 压缩： `fastlz_test -c /file.bin /file.cmprs.bin`  
-msh cmd 解压： `fastlz_test -d /file.cmprs.bin /file_dcmprs.bin`  
+### 3.2 Run example
+This example is a simple file compression and decompression routine, which depends on the file system. The commands used are two `-c` and `-d`. The `-c` command compresses one file to another, ` The -d` command decompresses a file to another file.
+How to use:
+msh cmd compression: `fastlz_test -c /file.bin /file.cmprs.bin`
+msh cmd decompression: `fastlz_test -d /file.cmprs.bin /file_dcmprs.bin`
 
-    msh />fastlz_test -c /file.bin /file.cmprs.bin
-    [fastlz]compress start : >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    [fastlz]compressed 469848 bytes into 363495 bytes , compression ratio is 77%!
-    msh />
-    msh />fastlz_test -d /file.cmprs.bin /file_dcmprs.bin
-    [fastlz]decompress start : >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    [fastlz]decompressed 363495 bytes into 469848 bytes !
+```
+msh />fastlz_test -c /file.bin /file.cmprs.bin
+[fastlz]compress start: >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> >>>>>>>>>>>>>>>>>>>>>>>>>>>>
+[fastlz]compressed 469848 bytes into 363495 bytes, compression ratio is 77%!
+msh />
+msh />fastlz_test -d /file.cmprs.bin /file_dcmprs.bin
+[fastlz]decompress start: >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> >>>>>>>>>>>>>>>>>>>>>>>>>>>>
+[fastlz]decompressed 363495 bytes into 469848 bytes!
+```
 
-## 4、注意事项
+## 4. Matters needing attention
 
-### 4.1 与官方源码差异
+### 4.1 Differences from the official source code
 
-  FastLZ 源码中使用了静态内存分配，预置了一个 32Kbytes 大小的 buffer，占用堆栈资源过大，修改了源码，使用动态内存分配替换原有的静态内存分配。
+  The FastLZ source code uses static memory allocation. A 32Kbytes buffer is preset, which occupies too much stack resources. The source code is modified and dynamic memory allocation is used to replace the original static memory allocation.
 
-  对源码 `fastlz.c` 进行如下变动，移植官方代码的时候需要注意：
+  Make the following changes to the source code `fastlz.c`, you need to pay attention when porting the official code:
 
-  1. 添加动态内存分配定义
+  1. Add dynamic memory allocation definition
   ```C
 #include <rtthread.h>
 
-#define malloc     rt_malloc
-#define free       rt_free
+#define malloc rt_malloc
+#define free rt_free
   ```
 
-  2. 使用 `malloc` 为 `htab` 分配内存
+  2. Use `malloc` to allocate memory for `htab`
   ```C
 const flzuint8* htab[HASH_SIZE];
   ```
-替换为
+Replace with
   ```C
 const flzuint8** htab = (const flzuint8**)malloc(sizeof(flzuint8*) * HASH_SIZE);
   ```
 
-  3. 在 `return` 前使用 `free` 释放内存
+  3. Use `free` to release memory before `return`
 
-## 5、参考资料
+## 5. Reference materials
 
-- FastLZ 官方网站：[http://fastlz.org/index.html](http://fastlz.org/support.htm)
+- FastLZ official website: [http://fastlz.org/index.html](http://fastlz.org/support.htm)
