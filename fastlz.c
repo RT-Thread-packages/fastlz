@@ -26,7 +26,7 @@
 
 #if !defined(FASTLZ__COMPRESSOR) && !defined(FASTLZ_DECOMPRESSOR)
 
-#include <rtconfig.h>
+#include <rtthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 
